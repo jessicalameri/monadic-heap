@@ -1,27 +1,26 @@
-(ns monadic-heap.internal.binary-tree
-  (:require [schema.core :as s]))
+(ns monadic-heap.internal.binary-tree)
 
-(s/defn ^:private find-parent :- s/Int
-  [node-idx :- s/Int]
+(defn ^:private find-parent
+  [node-idx]
   (-> node-idx
       dec
       (/ 2)
       Math/floor
       int))
 
-(s/defn parent :- (s/maybe s/Int)
-  [node-idx :- s/Int]
+(defn parent
+  [node-idx]
   (let [parent-found (find-parent node-idx)]
     (if (neg? parent-found)
       nil
       parent-found)))
 
-(s/defn left-child :- s/Int
-  [node-idx :- s/Int]
+(defn left-child
+  [node-idx]
   (-> node-idx
       (* 2)
       inc))
 
-(s/defn right-child :- s/Int
-  [node-idx :- s/Int]
+(defn right-child
+  [node-idx]
   (inc (left-child node-idx)))

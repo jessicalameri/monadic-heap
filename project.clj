@@ -1,5 +1,5 @@
 (defproject jessicalameri/monadic-heap "0.0.1-SNAPSHOT"
-  :description "Heap implementation with monadic return, written in Clojure."
+  :description "Heap implementation accepting maybe monadic and with monadic return, written in Clojure."
 
   :url "https://github.com/jessicalameri/monadic-heap"
 
@@ -21,8 +21,6 @@
                            :resource-paths ["test/resources/"]
                            :plugins        [[com.github.clojure-lsp/lein-clojure-lsp "1.3.20"]]
                            :dependencies   [[org.clojure/clojure "1.11.1"]
-                                            [org.clojure/tools.namespace "1.3.0"]
-                                            [prismatic/schema "1.4.1"]
                                             [funcool/cats "2.4.2"]]
                            :repl-options   {:init-ns user}}}
 

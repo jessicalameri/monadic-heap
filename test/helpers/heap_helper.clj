@@ -1,32 +1,38 @@
 (ns heap-helper
-  (:require [clojure.test :refer :all]
-            [schema.core :as s])
-  (:import monadic_heap.type.MonadicHeap))
+  (:require [cats.monad.maybe :as maybe]
+            [clojure.test :refer :all]))
 
-(s/defn fill-from-list :- MonadicHeap
-  [heap :- MonadicHeap
-   items :- [s/Int]]
+(defn list->maybe-list
+  [arr]
+  (->> arr
+       (map maybe/just)
+       vec))
+
+(defn add
+  [heap value]
+  (conj heap (maybe/just value)))
+
+(defn fill-from-list
+  [heap items]
   (if (pos? (count items))
     (-> heap
-        (conj (peek items))
+        (add (peek items))
         (recur (pop items)))
     heap))
 
-(s/defn fill :- MonadicHeap
-  [heap :- MonadicHeap
-   num-items :- s/Int]
+(defn fill
+  [heap num-items]
   (if (pos? num-items)
     (-> heap
-        (conj (rand-int 10000))
+        (add (rand-int 10000))
         (recur (dec num-items)))
     heap))
 
-(s/defn ->list :- [s/Any]
-  ([heap :- MonadicHeap]
+(defn ->list
+  ([heap]
    (->list heap []))
-  ([heap :- MonadicHeap
-    arr :- [s/Any]]
+  ([heap arr]
    (if (= 0 (count heap))
      arr
-     (let [top (peek heap)]
+     (let [top (maybe/from-maybe (peek heap))]
        (recur (pop heap) (conj arr top))))))

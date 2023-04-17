@@ -1,13 +1,10 @@
 (ns monadic-heap.internal.heapify
   (:require [monadic-heap.internal.binary-tree :as tree]
             [monadic-heap.internal.comparator :as comparator]
-            [monadic-heap.internal.list :as list]
-            [schema.core :as s]))
+            [monadic-heap.internal.list :as list]))
 
-(s/defn up :- [s/Any]
-  [arr :- [s/Any]
-   index :- s/Int
-   comparator-fn :- (s/pred ifn?)]
+(defn up
+  [arr index comparator-fn]
   (if-let [parent (tree/parent index)]
     (if (comparator/more-relevant? arr index parent comparator-fn)
       (-> arr
@@ -16,10 +13,8 @@
       arr)
     arr))
 
-(s/defn down :- [s/Any]
-  [arr :- [s/Any]
-   index :- s/Int
-   comparator-fn :- (s/pred ifn?)]
+(defn down
+  [arr index comparator-fn]
   (let [left-child  (tree/left-child index)
         right-child (tree/right-child index)]
     (cond

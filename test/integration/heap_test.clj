@@ -1,17 +1,17 @@
 (ns heap-test
-  (:require [clojure.test :refer :all]
+  (:require [cats.monad.maybe :as monad.maybe]
+            [clojure.test :refer :all]
             [heap-helper]
-            [monadic-heap.api :as api]
-            [schema.test :as st]))
+            [monadic-heap.api :as api]))
 
-(st/deftest min-heap-addition
-  (testing "min heap with 1000 items"
-    (let [list (shuffle [7538 6616 6581 3668 1985 2301 7335 4200 503 3431])
+(deftest min-heap-addition
+  (testing "min heap with some items"
+    (let [list (shuffle [503 4200 6616 7538 2301 3668 7335 1985 3431 6581])
           heap (heap-helper/fill-from-list (api/min-heap) list)]
-      (is (= (apply min list) (peek heap))))))
+      (is (= (apply min list) (monad.maybe/from-maybe (peek heap)))))))
 
-(st/deftest min-heap-removal
-  (testing "min heap with 1000 items"
-    (let [heap           (heap-helper/fill (api/min-heap) 10)
+(deftest min-heap-removal
+  (testing "min heap with 100 items"
+    (let [heap           (heap-helper/fill (api/min-heap) 1000)
           list-from-heap (heap-helper/->list heap)]
       (is (= (seq list-from-heap) (sort list-from-heap))))))

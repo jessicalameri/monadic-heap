@@ -1,39 +1,44 @@
 (ns monadic-heap.internal.core
-  (:require [cats.monad.maybe :as monad.maybe]
+  (:require [cats.data :as data]
+            [cats.monad.maybe :as maybe]
             [monadic-heap.internal.heapify :as heapify]
-            [monadic-heap.internal.list :as list]
-            [schema.core :as s]))
+            [monadic-heap.internal.list :as list]))
 
-(s/defn size :- s/Int
-  [arr :- [s/Any]]
-  (count arr))
+(defn current-size
+  [pair]
+  (nth pair 0))
 
-(s/defn top
-  [arr :- [s/Any]]
-  (if-let [value (first arr)]
-    (monad.maybe/just value)
-    (monad.maybe/nothing)))
+(defn top
+  [pair]
+  (first (nth pair 1)))
 
-(s/defn ^:private last-index :- s/Int
-  [arr :- [s/Any]]
-  (dec (size arr)))
+(defn ->pair
+  [arr]
+  (data/pair (count arr) arr))
 
-(s/defn add-to-heap
-  [arr :- [s/Any]
-   element :- s/Any
-   comparator-fn :- (s/pred ifn?)]
-  (let [new-arr (conj arr element)
-        index   (last-index new-arr)]
-    (heapify/up new-arr index comparator-fn)))
+(defn adapt-element
+  [element]
+  (cond
+    (maybe/maybe? element) element
+    (nil? element)         (maybe/nothing)
+    :else                  (maybe/just element)))
 
-(s/defn remove-from-heap
-  [arr :- [s/Any]
-   comparator-fn :- (s/pred ifn?)]
-  (let [last-index (last-index arr)]
+(defn add-to-heap
+  [pair element comparator-fn]
+  (let [new-index (current-size pair)
+        element   (adapt-element element)
+        new-arr   (conj (nth pair 1) element)]
+    (->pair (heapify/up new-arr new-index comparator-fn))))
+
+(defn remove-from-heap
+  [pair comparator-fn]
+  (let [last-index (dec (current-size pair))]
     (if (pos? last-index)
-      (-> arr
+      (-> pair
+          (nth 1)
           (list/swap 0 last-index)
           pop
-          (heapify/down 0 comparator-fn))
-      [])))
+          (heapify/down 0 comparator-fn)
+          ->pair)
+      (->pair []))))
 

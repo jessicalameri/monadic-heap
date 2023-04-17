@@ -1,15 +1,15 @@
 (ns monadic-heap.api
-  (:require [schema.core :as s])
+  (:require [cats.data :as data])
   (:import monadic_heap.type.MonadicHeap))
 
-(s/defn heap :- MonadicHeap
-  [comparator-fn :- (s/pred ifn?)]
-  (MonadicHeap. [] comparator-fn))
+(defn heap
+  [comparator-fn]
+  (MonadicHeap. (data/pair 0 []) comparator-fn))
 
-(s/defn min-heap :- MonadicHeap
+(defn min-heap
   []
-  (heap <))
+  (heap <=))
 
-(s/defn max-heap :- MonadicHeap
+(defn max-heap
   []
-  (heap >))
+  (heap >=))

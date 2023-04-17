@@ -1,15 +1,11 @@
-(ns monadic-heap.internal.list
-  (:require [schema.core :as s]))
+(ns monadic-heap.internal.list)
 
-(s/defn value :- (s/maybe s/Any)
-  [arr :- [s/Any]
-   node-index :- s/Int]
+(defn value
+  [arr node-index]
   (get arr node-index))
 
-(s/defn swap :- [s/Any]
-  [arr :- [s/Any]
-   left :- s/Int
-   right :- s/Int]
+(defn swap
+  [arr left right]
   (assoc arr
     right (value arr left)
     left  (value arr right)))

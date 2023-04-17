@@ -1,20 +1,20 @@
 (ns monadic-heap.internal.core-test
-  (:require [cats.monad.maybe :as monad.maybe]
-            [clojure.test :refer [are is testing]]
-            [monadic-heap.internal.core :as core]
-            [schema.test :as st]))
+  (:require [cats.data :as data]
+            [cats.monad.maybe :as maybe]
+            [clojure.test :refer [are is testing deftest]]
+            [heap-helper :as heap]
+            [monadic-heap.internal.core :as core]))
 
-(st/deftest size-test
+(deftest size-test
   (testing "should return the size of the internal array"
-    (are [size list] (= size (core/size list))
+    (are [size list] (= size (core/current-size (data/pair (count list) list)))
       3 [1 2 3]
       4 [:a :b :c :d]
       0 [])))
 
-(st/deftest top-test
+(deftest top-test
   (testing "return a monad of the first element"
-    (is (monad.maybe/maybe? (core/top [0 1 2])))
-    (is (monad.maybe/just? (core/top [0 1 2])))
-    (is (= 0 (monad.maybe/from-maybe (core/top [0 1 2]))))
-    (is (monad.maybe/nothing? (core/top [])))
-    (is (nil? (monad.maybe/from-maybe (core/top []))))))
+    (is (maybe/maybe? (core/top (data/pair 3 (heap/list->maybe-list [0 1 2])))))
+    (is (maybe/just? (core/top (data/pair 3 (heap/list->maybe-list [0 1 2])))))
+    (is (= 0 (maybe/from-maybe (core/top (data/pair 3 (heap/list->maybe-list [0 1 2]))))))
+    (is (maybe/nothing? (core/top (data/pair 0 []))))))

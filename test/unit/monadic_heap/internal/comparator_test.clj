@@ -1,11 +1,11 @@
 (ns monadic-heap.internal.comparator-test
-  (:require [clojure.test :refer [is testing]]
-            [monadic-heap.internal.comparator :as comparator]
-            [schema.test :as st]))
+  (:require [clojure.test :refer [is testing deftest]]
+            [heap-helper :as heap]
+            [monadic-heap.internal.comparator :as comparator]))
 
-(def default-list [10 30 50 40 20])
+(def default-list (heap/list->maybe-list [10 30 50 40 20]))
 
-(st/deftest more-relevant?-test
+(deftest more-relevant?-test
   (testing "10 isnt greater than 30 "
     (is (false? (comparator/more-relevant? default-list 0 1 >))))
 

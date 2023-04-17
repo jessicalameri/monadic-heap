@@ -11,7 +11,7 @@
       (is (= (apply min list) (monad.maybe/from-maybe (peek heap)))))))
 
 (deftest min-heap-removal
-  (testing "min heap with 100 items"
+  (testing "min heap with 1000 items"
     (let [heap           (heap-helper/fill (api/min-heap) 1000)
           list-from-heap (heap-helper/->list heap)]
       (is (= (seq list-from-heap) (sort list-from-heap))))))
